@@ -213,6 +213,7 @@
 
   <div class="actions">
     <button class="btn btn-primary" onclick="window.print()">Print / Save PDF</button>
+    <button class="btn btn-ghost" onclick="clearAll()">Clear All</button>
   </div>
 </div>
 
@@ -365,6 +366,17 @@
       if(this.textContent.trim()===''){ this.textContent=this.dataset.ph; }
     });
   });
+
+  // Reset the whole letter to its blank state
+  function clearAll(){
+    if(!confirm('Clear all selections and entries?')) return;
+    // reset editable fill-in fields to their placeholders
+    document.querySelectorAll('.fill[contenteditable]').forEach(el=>{ el.textContent=el.dataset.ph; });
+    // reset lane -> this also rebuilds/clears the two dropdowns, phone numbers, fuel, and signature
+    const lane=document.getElementById('laneSelect');
+    lane.value='';
+    applyLane();
+  }
 </script>
 </body>
 </html>
