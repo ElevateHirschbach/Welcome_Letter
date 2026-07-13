@@ -27,22 +27,10 @@
   .allcaps{font-weight:800;letter-spacing:.5px;color:var(--navy);font-size:15px;margin-top:6px}
   .sig{margin:18px 0 0;font-size:14px}
   .sig .names{font-weight:700;color:var(--navy)}
-  .partner-picker{position:relative;display:inline-block;margin-top:8px}
-  .picker-btn{font:inherit;font-size:12px;font-weight:700;color:var(--navy);background:#fff;border:1px solid var(--navy);border-radius:5px;padding:6px 12px;cursor:pointer}
-  .picker-btn:hover{background:var(--navy);color:#fff}
-  .picker-menu{display:none;position:absolute;z-index:20;top:calc(100% + 4px);left:0;width:280px;max-height:280px;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 26px rgba(27,42,74,.18);padding:8px}
-  .picker-menu.open{display:block}
-  .picker-actions{display:flex;gap:8px;padding:2px 4px 8px;border-bottom:1px solid var(--line);margin-bottom:6px}
-  .picker-actions button{font:inherit;font-size:11px;font-weight:700;color:var(--orange);background:none;border:none;cursor:pointer;padding:2px 4px}
-  .picker-actions button:hover{text-decoration:underline}
-  .picker-actions .add-name{margin-left:auto;color:var(--navy)}
-  .picker-list{display:grid;grid-template-columns:1fr 1fr;gap:2px}
-  .picker-list label{display:flex;align-items:center;gap:7px;font-size:13px;padding:5px 7px;border-radius:5px;cursor:pointer;font-weight:400;color:var(--ink)}
-  .picker-list label:hover{background:#f4f7fb}
-  .picker-list label .txt{flex:1}
-  .picker-list input{accent-color:var(--orange);width:15px;height:15px}
-  .picker-list .rm{border:none;background:none;color:#b3261e;font-weight:700;font-size:14px;line-height:1;cursor:pointer;opacity:0;padding:0 2px}
-  .picker-list label:hover .rm{opacity:1}
+  .lane-picker{margin-top:10px;display:flex;align-items:center;gap:8px}
+  .lane-lbl{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+  .lane-select{font:inherit;font-size:13px;font-weight:600;color:var(--navy);background:var(--fill);border:1px solid var(--fill-border);border-radius:5px;padding:6px 10px;cursor:pointer}
+  .lane-select:focus{outline:2px solid var(--orange);background:#fffdf5}
   /* Editable fill-in fields */
   .fill{background:var(--fill);border:1px solid var(--fill-border);border-radius:4px;padding:1px 8px;min-width:70px;display:inline-block;font:inherit;color:var(--ink)}
   .fill:focus{outline:2px solid var(--orange);background:#fffdf5}
@@ -68,10 +56,12 @@
   table.phones tr:nth-child(even) td{background:#f7f9fc}
   table.phones .primary td{background:#fff4ee!important}
   table.phones .primary td:last-child{font-weight:800;color:var(--orange)}
-  .fuel-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px}
+  .fuel-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-top:8px}
   .fuel-cols .st{font-weight:700;color:var(--navy);text-transform:uppercase;font-size:12px;letter-spacing:.5px;border-bottom:2px solid var(--orange);padding-bottom:3px;margin-bottom:6px}
   .fuel-cols ul{padding-left:16px}
   .fuel-cols li{font-size:12.5px;margin-bottom:3px}
+  .fuel-empty{grid-column:1/-1;font-size:13px;color:var(--muted);font-style:italic;padding:6px 0}
+  .fuel-state-name{font-weight:400}
   .pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:10px 0}
   .pillar{background:var(--navy);color:#fff;border-radius:8px;padding:12px 8px;text-align:center}
   .pillar b{display:block;font-size:20px;color:var(--orange-light);font-weight:800;line-height:1.1}
@@ -98,12 +88,12 @@
   @media print{
     body{background:#fff}
     .sheet{box-shadow:none;margin:0;max-width:100%}
-    .actions,.addbtn,.del,.mhead .addbtn,.partner-picker{display:none!important}
+    .actions,.addbtn,.del,.mhead .addbtn,.lane-picker{display:none!important}
     .fill{background:#fff8e1!important;border:1px solid #f4c430!important}
     select.fill-select{background:#fff8e1!important;border:1px solid #f4c430!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;appearance:none}
     .members input{border:none}
     header,.titlebar,.secnum,.sectitle,table.phones th,.pillar,.badge,.fuel-cols .st,.partner-note{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-    .sec,table,.card,.members{break-inside:avoid}
+    .sec,table,.card,.members,.pillars,.partner-note{break-inside:avoid}
     .page-break{break-before:page;page-break-before:always}
   }
 </style>
@@ -130,22 +120,23 @@
       <p>As a member of this elite fleet, you are not just delivering freight &mdash; you represent an ELITE standard. The success of Team Expedited is shared, and it is owned by every driver who wears this title with pride.</p>
       <p>We trust you to represent Team Expedited with professionalism and pride &mdash; every mile, every load, every time.</p>
       <p>Attached, you&rsquo;ll find several important documents for your review. Please work through every item before leaving orientation. This is a time-sensitive, slip-seat, relay operation, and we hold our drivers to the highest performance and safety standards.</p>
-      <p>As your Expedited Business Partners, we are available to support you 24/7. If you have any questions at any point, please don&rsquo;t hesitate to reach out to us at <b>(402) 404-2083</b>.</p>
+      <p>As your Expedited Business Partners, we are available to support you 24/7. If you have any questions at any point, please don&rsquo;t hesitate to reach out to us at <b><span id="phoneLetter">(402) 404-2083</span></b>.</p>
       <p class="allcaps">Welcome to the Elite Fleet of Hirschbach</p>
       <div class="sig">
         Sincerely,<br>
-        Your Expedited Business Partners<br>
-        <span class="names" id="partnerNames">&mdash; select partners &mdash;</span>
-        <div class="partner-picker">
-          <button type="button" class="picker-btn" id="pickerBtn" onclick="togglePicker()">Select Business Partners &#9662;</button>
-          <div class="picker-menu" id="pickerMenu">
-            <div class="picker-actions">
-              <button type="button" onclick="setAllPartners(true)">Select all</button>
-              <button type="button" onclick="setAllPartners(false)">Clear</button>
-              <button type="button" class="add-name" onclick="addPartner()">+ Add name</button>
-            </div>
-            <div class="picker-list" id="pickerList"></div>
-          </div>
+        <span id="partnerLabel">Your Expedited Business Partners</span><br>
+        <span class="names" id="partnerNames">&mdash; select a lane &mdash;</span>
+        <div class="lane-picker">
+          <label class="lane-lbl" for="laneSelect">Lane:</label>
+          <select id="laneSelect" class="lane-select" onchange="applyLane()">
+            <option value="" selected>&mdash; Select Lane &mdash;</option>
+            <option value="147">147 &mdash; West Coast Corridor</option>
+            <option value="148">148 &mdash; Indianapolis &rarr; Mount Airy, NC</option>
+            <option value="149">149 &mdash; Indianapolis &rarr; Bedford, PA</option>
+            <option value="154">154 &mdash; Indianapolis &rarr; Carlisle, PA</option>
+            <option value="152">152 &mdash; Indianapolis &rarr; Kansas City</option>
+            <option value="151">151 &mdash; Sapulpa Hub &rarr; North/South</option>
+          </select>
         </div>
       </div>
     </div>
@@ -175,23 +166,7 @@
         <p class="lead">You will begin and end every work shift at your assigned Home Yard.</p>
         <div class="lbl">Your assigned Home Yard is:</div>
         <select class="fill fill-select" id="homeYard">
-          <option value="" selected>&mdash; Select Home Yard &mdash;</option>
-          <option>1035 West Main St, Quartzsite, AZ</option>
-          <option>2626 U Street, San Bernardino, CA</option>
-          <option>6001 S Wilmot Rd, Tucson, AZ</option>
-          <option>202 N. Motel Blvd, Las Cruces, NM</option>
-          <option>220 E Frontage I-20, Toyah, TX</option>
-          <option>600 S. Access Rd, Tye, TX</option>
-          <option>8600 E I-20, Aledo, TX</option>
-          <option>9232 I-20, Merkel, TX</option>
-          <option>6111 West Hanna Ave, Indianapolis, IN</option>
-          <option>153 McKinney Rd, Mount Airy, NC</option>
-          <option>179 Country Ridge Rd, Bedford, PA</option>
-          <option>2563 S 88th Street, Kansas City, KS</option>
-          <option>7833 Interstate 35, Denton, TX</option>
-          <option>73 Logistics Dr, Carlisle, PA</option>
-          <option>19007 W HWY 33, Sapulpa, OK</option>
-          <option value="__add__">&#43; Add new address&hellip;</option>
+          <option value="" selected>&mdash; Select a lane first &mdash;</option>
         </select>
       </div>
       <div class="card">
@@ -199,20 +174,7 @@
         <p class="lead">(subject to change based on business needs)</p>
         <div class="lbl">Your primary swap point is:</div>
         <select class="fill fill-select" id="swapPoint">
-          <option value="" selected>&mdash; Select Swap Point &mdash;</option>
-          <option>80 Dixon Run Rd, Jackson, OH</option>
-          <option>605 Sonora Rd, Zanesville, OH</option>
-          <option>13945 Missouri Bottom Road, Bridgeton, MO</option>
-          <option>2563 S 88th Street, Kansas City, KS</option>
-          <option>7833 Interstate 35, Denton, TX</option>
-          <option>1035 West Main St, Quartzsite, AZ</option>
-          <option>6001 S Wilmot Rd, Tucson, AZ</option>
-          <option>202 N. Motel Blvd, Las Cruces, NM</option>
-          <option>220 E Frontage I-20, Toyah, TX</option>
-          <option>600 S. Access Rd, Tye, TX</option>
-          <option>8600 E I-20, Aledo, TX</option>
-          <option>9232 I-20, Merkel, TX</option>
-          <option value="__add__">&#43; Add new address&hellip;</option>
+          <option value="" selected>&mdash; Select a lane first &mdash;</option>
         </select>
       </div>
     </div>
@@ -221,7 +183,7 @@
     <table class="phones">
       <thead><tr><th>Department</th><th>Phone Number</th></tr></thead>
       <tbody>
-        <tr class="primary"><td>Expedited Team (24/7)</td><td>(402) 404-2083</td></tr>
+        <tr class="primary"><td>Expedited Team (24/7) <span id="phoneQueue" style="font-weight:600;color:var(--muted)"></span></td><td><span id="phoneTable">(402) 404-2083</span></td></tr>
         <tr><td>Logs</td><td>(563) 303-7420</td></tr>
         <tr><td>Safety</td><td>(402) 404-2654</td></tr>
         <tr><td>Claims</td><td>(402) 404-2613</td></tr>
@@ -234,26 +196,8 @@
     <div class="sec page-break"><span class="secnum">02</span><span class="sectitle">Fuel Stops &amp; Important Numbers</span></div>
     <h3>Approved Fuel Stops</h3>
     <p style="font-size:13.5px">Each lane has authorized fuel locations, which have been provided to you. Expedited drivers are required to fuel only at approved locations. If a fuel solution is sent outside of these parameters, please disregard it and follow Expedited guidelines.</p>
-    <div class="fuel-cols">
-      <div>
-        <div class="st">Indiana</div>
-        <ul>
-          <li>Loves #601 &mdash; Knightstown, IN</li>
-          <li>Flying J #649 &mdash; Indianapolis, IN</li>
-          <li>Loves #391 &mdash; Saint Paul, IN</li>
-        </ul>
-      </div>
-      <div>
-        <div class="st">Ohio</div>
-        <ul><li>Loves #594 &mdash; Bidwell, OH</li></ul>
-      </div>
-      <div>
-        <div class="st">Virginia</div>
-        <ul>
-          <li>Loves #715 &mdash; Bastian, VA</li>
-          <li>Loves #399 &mdash; Lambsburg, VA</li>
-        </ul>
-      </div>
+    <div class="fuel-cols" id="fuelCols">
+      <div class="fuel-empty">Select a lane above to view approved fuel stops.</div>
     </div>
 
     <!-- 03 -->
@@ -264,7 +208,7 @@
       <div class="pillar"><b>12 hrs</b><span>Standard Shift</span></div>
       <div class="pillar"><b>Slip Seat</b><span>Relay Operation</span></div>
     </div>
-    <div class="partner-note">Your Expedited Business Partners can be reached at <b>(402) 404-2083</b></div>
+    <div class="partner-note">Your Expedited Business Partners can be reached at <b><span id="phoneNote">(402) 404-2083</span></b></div>
   </div>
 
   <div class="actions">
@@ -273,82 +217,144 @@
 </div>
 
 <script>
-  // Allow adding a new address to either dropdown on the fly
-  function setupAddable(id){
+  /* ============================================================
+     LANE DATA  —  TO UPDATE, EDIT THE LISTS BELOW.
+     Each lane has: team (signature names), yards (Home Yard options),
+     and swaps (Primary Swap Point options). Keep each entry in quotes,
+     separated by commas, inside the [ ] brackets. Order = display order.
+     ============================================================ */
+  const laneTeams = {
+    "147": ["Regina","Tyler","Angela","Amye","Davey","Mike"],
+    "148": ["Allen","Bonnie","Davey","Mike"],
+    "149": ["Lacey","Brian","Chelsie","Brandon"],
+    "154": ["Lacey","Brian","Chelsie","Brandon"],
+    "152": ["Josh","Bryan","Jordan","Samsung"],
+    "151": ["Joe","Sara","Casey","Cecil"]
+  };
+
+  const laneYards = {
+    "147": ["1035 West Main St, Quartzsite, AZ","2626 U Street, San Bernardino, CA","6001 S Wilmot Rd, Tucson, AZ","202 N. Motel Blvd, Las Cruces, NM","600 S. Access Rd, Tye, TX","8600 E I-20, Aledo, TX","9232 I-20, Merkel, TX"],
+    "148": ["6111 West Hanna Ave, Indianapolis, IN","153 McKinney Rd, Mount Airy, NC"],
+    "149": ["6111 West Hanna Ave, Indianapolis, IN","179 Country Ridge Rd, Bedford, PA"],
+    "154": ["6111 West Hanna Ave, Indianapolis, IN","73 Logistics Dr, Carlisle, PA"],
+    "152": ["6111 West Hanna Ave, Indianapolis, IN","2563 S 88th Street, Kansas City, KS"],
+    "151": ["19007 W HWY 33, Sapulpa, OK"]
+  };
+
+  const laneSwaps = {
+    "147": ["1035 West Main St, Quartzsite, AZ","6001 S Wilmot Rd, Tucson, AZ","202 N. Motel Blvd, Las Cruces, NM","220 E Frontage I-20, Toyah, TX","600 S. Access Rd, Tye, TX","8600 E I-20, Aledo, TX","9232 I-20, Merkel, TX"],
+    "148": ["80 Dixon Run Rd, Jackson, OH"],
+    "149": ["Columbus Metro"],
+    "154": ["64322 Wintergreen Rd, Lore City, OH"],
+    "152": ["13945 Missouri Bottom Road, Bridgeton, MO"],
+    "151": ["Kansas City or Dallas Metro"]
+  };
+
+  // Lane phone queues: [queue label, phone number]
+  const lanePhones = {
+    "147": ["EXPE3","(402) 404-2403"],
+    "148": ["EXPE1","(402) 404-2083"],
+    "149": ["EXPE4","(402) 404-2491"],
+    "154": ["EXPE4","(402) 404-2491"],
+    "152": ["EXPE6","(319) 387-2172"],
+    "151": ["EXPE2","(402) 404-2644"]
+  };
+  const DEFAULT_PHONE="(402) 404-2083";
+
+  const stateNames = {"AZ":"Arizona","CA":"California","NM":"New Mexico","IN":"Indiana","OH":"Ohio","PA":"Pennsylvania","VA":"Virginia","KS":"Kansas","MO":"Missouri","OK":"Oklahoma","TX":"Texas"};
+
+  /* Approved fuel stops per lane, grouped by state. Edit to update. */
+  const laneFuel = {
+    "147": {"AZ": ["Loves #831 \u2014 Willcox, AZ", "Loves #286 \u2014 Quartzsite, AZ", "Loves #265 \u2014 Casa Grande, AZ", "Loves #972 \u2014 Eloy, AZ"], "CA": ["Loves #207 \u2014 Coachella, CA", "Pilot #1326 \u2014 Colton, CA"], "NM": ["Loves #259 \u2014 Las Cruces, NM"]},
+    "148": {"IN": ["Loves #601 \u2014 Knightstown, IN", "Flying J #649 \u2014 Indianapolis, IN", "Loves #323 \u2014 Marion, IN", "Loves #391 \u2014 Saint Paul, IN", "Loves #254 \u2014 Mooresville, IN", "Loves #222 \u2014 Richmond, IN"], "OH": ["Pilot #6 \u2014 Cambridge, OH", "Loves #221 \u2014 Zanesville, OH", "Loves #594 \u2014 Bidwell, OH", "Loves #892 \u2014 Etna, OH", "Loves #563 \u2014 Belmont, OH"]},
+    "149": {"IN": ["Loves #601 \u2014 Knightstown, IN", "Flying J #649 \u2014 Indianapolis, IN", "Loves #323 \u2014 Marion, IN", "Loves #391 \u2014 Saint Paul, IN", "Loves #254 \u2014 Mooresville, IN", "Loves #222 \u2014 Richmond, IN"], "OH": ["Pilot #6 \u2014 Cambridge, OH", "Loves #221 \u2014 Zanesville, OH", "Loves #594 \u2014 Bidwell, OH", "Loves #892 \u2014 Etna, OH", "Loves #563 \u2014 Belmont, OH"], "PA": ["Petro #336 \u2014 Carlisle, PA"], "VA": ["Loves #715 \u2014 Bastian, VA", "Loves #399 \u2014 Lambsburg, VA"]},
+    "154": {"IN": ["Loves #601 \u2014 Knightstown, IN", "Flying J #649 \u2014 Indianapolis, IN", "Loves #323 \u2014 Marion, IN", "Loves #391 \u2014 Saint Paul, IN", "Loves #254 \u2014 Mooresville, IN", "Loves #222 \u2014 Richmond, IN"], "OH": ["Pilot #6 \u2014 Cambridge, OH", "Loves #221 \u2014 Zanesville, OH", "Loves #594 \u2014 Bidwell, OH", "Loves #892 \u2014 Etna, OH", "Loves #563 \u2014 Belmont, OH"], "PA": ["Petro #336 \u2014 Carlisle, PA"], "VA": ["Loves #715 \u2014 Bastian, VA", "Loves #399 \u2014 Lambsburg, VA"]},
+    "152": {"IN": ["Loves #601 \u2014 Knightstown, IN", "Flying J #649 \u2014 Indianapolis, IN", "Loves #323 \u2014 Marion, IN", "Loves #391 \u2014 Saint Paul, IN", "Loves #254 \u2014 Mooresville, IN", "Loves #222 \u2014 Richmond, IN"], "KS": ["Loves #692 \u2014 Chanute, KS", "TA #468 \u2014 Kansas City, KS", "Loves #258 \u2014 Ottawa, KS"], "MO": ["Loves #616 \u2014 Harrisonville, MO", "Loves #809 \u2014 Bates City, MO", "Loves #612 \u2014 Bridgeton, MO", "Loves #282 \u2014 Joplin, MO"], "OK": ["Flying J #706 \u2014 Tulsa, OK", "Loves #675 \u2014 Okmulgee, OK", "Loves #260 \u2014 Norman, OK"]},
+    "151": {"KS": ["Loves #692 \u2014 Chanute, KS", "TA #468 \u2014 Kansas City, KS", "Loves #258 \u2014 Ottawa, KS"], "MO": ["Loves #616 \u2014 Harrisonville, MO", "Loves #809 \u2014 Bates City, MO", "Loves #612 \u2014 Bridgeton, MO", "Loves #282 \u2014 Joplin, MO"], "OK": ["Flying J #706 \u2014 Tulsa, OK", "Loves #675 \u2014 Okmulgee, OK", "Loves #260 \u2014 Norman, OK"], "TX": ["Loves #976 \u2014 Big Spring, TX", "Loves #609 \u2014 Denton, TX", "Loves #762 \u2014 Laredo, TX", "Loves #471 \u2014 Natalia, TX", "Pilot #568 \u2014 Von Ormy, TX", "Loves #492 \u2014 Pecos, TX", "Loves #475 \u2014 Sweetwater, TX", "Loves #242 \u2014 San Antonio, TX", "Loves #214 \u2014 El Paso, TX", "Loves #447 \u2014 Anthony, TX", "Loves #270 \u2014 Ranger, TX", "Loves #273 \u2014 Weatherford, TX", "Loves #331 \u2014 Hutchins, TX"]}
+  };
+
+  function renderFuel(lane){
+    const box=document.getElementById('fuelCols');
+    if(!box) return;
+    if(!lane || !laneFuel[lane]){
+      box.innerHTML='<div class="fuel-empty">Select a lane above to view approved fuel stops.</div>';
+      return;
+    }
+    const states=laneFuel[lane];
+    let html='';
+    Object.keys(states).forEach(st=>{
+      const label=stateNames[st]||st;
+      const items=states[st].map(s=>`<li>${s}</li>`).join('');
+      html+=`<div><div class="st">${label}</div><ul>${items}</ul></div>`;
+    });
+    box.innerHTML=html;
+  }
+
+  function fillSelect(sel, items, placeholder){
+    sel.innerHTML='';
+    const ph=document.createElement('option');
+    ph.value=''; ph.selected=true; ph.innerHTML=placeholder;
+    sel.appendChild(ph);
+    items.forEach(t=>{ const o=document.createElement('option'); o.textContent=t; sel.appendChild(o); });
+    const add=document.createElement('option');
+    add.value='__add__'; add.innerHTML='&#43; Add new address&hellip;';
+    sel.appendChild(add);
+  }
+
+  function applyLane(){
+    const lane=document.getElementById('laneSelect').value;
+    const label=document.getElementById('partnerLabel');
+    const names=document.getElementById('partnerNames');
+    const hy=document.getElementById('homeYard');
+    const sp=document.getElementById('swapPoint');
+    if(lane && laneTeams[lane]){
+      label.textContent=`Your ${lane} Expedited Business Partners`;
+      names.textContent=laneTeams[lane].join(', ');
+      fillSelect(hy, laneYards[lane]||[], '&mdash; Select Home Yard &mdash;');
+      fillSelect(sp, laneSwaps[lane]||[], '&mdash; Select Swap Point &mdash;');
+    } else {
+      label.textContent='Your Expedited Business Partners';
+      names.textContent='\u2014 select a lane \u2014';
+      fillSelect(hy, [], '&mdash; Select a lane first &mdash;');
+      fillSelect(sp, [], '&mdash; Select a lane first &mdash;');
+    }
+    // Lane-based phone number in all three spots
+    const ph = (lane && lanePhones[lane]) ? lanePhones[lane][1] : DEFAULT_PHONE;
+    const q  = (lane && lanePhones[lane]) ? lanePhones[lane][0] : '';
+    ['phoneLetter','phoneTable','phoneNote'].forEach(id=>{
+      const el=document.getElementById(id); if(el) el.textContent=ph;
+    });
+    const qel=document.getElementById('phoneQueue');
+    if(qel) qel.textContent = q ? '\u2014 '+q : '';
+    renderFuel(lane);
+  }
+
+  // Handle "+ Add new address" on the lane-filtered dropdowns.
+  // A newly added address is stored under the current lane, so it stays
+  // available for that lane during this session.
+  function currentLane(){ return document.getElementById('laneSelect').value; }
+  function setupAddable(id, laneMap){
     const sel=document.getElementById(id);
     let prev=sel.value;
     sel.addEventListener('change',function(){
       if(this.value==='__add__'){
+        const lane=currentLane();
+        if(!lane){ alert('Select a lane first, then add an address.'); this.value=prev; return; }
         const entry=prompt('Enter new address (Street, City, ST):','');
         if(entry && entry.trim()){
+          const clean=entry.trim();
+          if(!laneMap[lane]) laneMap[lane]=[];
+          if(!laneMap[lane].some(a=>a.toLowerCase()===clean.toLowerCase())) laneMap[lane].push(clean);
           const opt=document.createElement('option');
-          opt.textContent=entry.trim();
-          // insert before the "Add new" option
-          const addOpt=this.querySelector('option[value="__add__"]');
-          this.insertBefore(opt,addOpt);
-          opt.selected=true;
-          prev=opt.value;
-        } else {
-          this.value=prev; // cancelled -> revert
-        }
-      } else {
-        prev=this.value;
-      }
+          opt.textContent=clean;
+          this.insertBefore(opt, this.querySelector('option[value="__add__"]'));
+          opt.selected=true; prev=opt.value;
+        } else { this.value=prev; }
+      } else { prev=this.value; }
     });
   }
-  setupAddable('homeYard');
-  setupAddable('swapPoint');
-
-  const partnerOptions = ["Allen","Amye","Angela","Bonnie","Brandon","Brian","Bryan","Casey","Cecil","Chelsie","David","Joe","John","Jordan","Josh","Krista","Kristi","Lacey","Lyndi","Mike","Nate","Regina","Robert","Samsung","Sara","Sean","Tyler"];
-  const pickerList = document.getElementById('pickerList');
-  function escAttr(s){return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-  function makePartnerRow(n){
-    const lab=document.createElement('label');
-    lab.innerHTML=`<input type="checkbox" value="${escAttr(n)}" onchange="updatePartnerNames()"><span class="txt">${escAttr(n)}</span><button type="button" class="rm" title="Remove from list" onclick="removePartner(event, this)">&times;</button>`;
-    return lab;
-  }
-  partnerOptions.forEach(n=> pickerList.appendChild(makePartnerRow(n)) );
-
-  function updatePartnerNames(){
-    const sel=[...pickerList.querySelectorAll('input:checked')].map(i=>i.value);
-    const out=document.getElementById('partnerNames');
-    out.textContent = sel.length ? sel.join(', ') : '\u2014 select partners \u2014';
-  }
-  function setAllPartners(v){
-    pickerList.querySelectorAll('input').forEach(i=>i.checked=v);
-    updatePartnerNames();
-  }
-  function addPartner(){
-    const name=prompt('Add a team member name:','');
-    if(!name || !name.trim()) return;
-    const clean=name.trim();
-    // avoid duplicates (case-insensitive)
-    const existing=[...pickerList.querySelectorAll('input')].map(i=>i.value.toLowerCase());
-    let row;
-    if(existing.includes(clean.toLowerCase())){
-      row=[...pickerList.querySelectorAll('label')].find(l=>l.querySelector('input').value.toLowerCase()===clean.toLowerCase());
-    } else {
-      row=makePartnerRow(clean);
-      // insert alphabetically
-      const labels=[...pickerList.querySelectorAll('label')];
-      const after=labels.find(l=> l.querySelector('.txt').textContent.toLowerCase() > clean.toLowerCase());
-      if(after) pickerList.insertBefore(row, after); else pickerList.appendChild(row);
-    }
-    row.querySelector('input').checked=true;
-    updatePartnerNames();
-  }
-  function removePartner(ev, btn){
-    ev.preventDefault(); ev.stopPropagation();
-    const lab=btn.closest('label');
-    const wasChecked=lab.querySelector('input').checked;
-    lab.remove();
-    if(wasChecked) updatePartnerNames();
-  }
-  function togglePicker(){ document.getElementById('pickerMenu').classList.toggle('open'); }
-  document.addEventListener('click',e=>{
-    const pk=document.querySelector('.partner-picker');
-    if(pk && !pk.contains(e.target)) document.getElementById('pickerMenu').classList.remove('open');
-  });
+  setupAddable('homeYard', laneYards);
+  setupAddable('swapPoint', laneSwaps);
 
   // Clear placeholder text on first focus for fill fields
   document.querySelectorAll('.fill[contenteditable]').forEach(el=>{
