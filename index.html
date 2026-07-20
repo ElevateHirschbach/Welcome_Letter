@@ -34,6 +34,7 @@
   /* Editable fill-in fields */
   .fill{background:var(--fill);border:1px solid var(--fill-border);border-radius:4px;padding:1px 8px;min-width:70px;display:inline-block;font:inherit;color:var(--ink)}
   .fill:focus{outline:2px solid var(--orange);background:#fffdf5}
+  select.fill-inline{width:auto;display:inline-block;margin:0;padding:1px 6px;font:inherit;color:var(--ink);cursor:pointer;vertical-align:baseline}
   textarea.fill{width:100%;resize:vertical;min-height:62px;display:block;margin-top:4px;line-height:1.5}
   select.fill-select{width:100%;display:block;margin-top:4px;font:inherit;font-size:13.5px;padding:8px 10px;background:var(--fill);border:1px solid var(--fill-border);border-radius:4px;color:var(--ink);cursor:pointer}
   select.fill-select:focus{outline:2px solid var(--orange);background:#fffdf5}
@@ -96,8 +97,8 @@
     body{background:#fff}
     .sheet{box-shadow:none;margin:0;max-width:100%}
     .actions,.addbtn,.del,.mhead .addbtn,.lane-picker{display:none!important}
-    .fill{background:#fff8e1!important;border:1px solid #f4c430!important}
-    select.fill-select{background:#fff8e1!important;border:1px solid #f4c430!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;appearance:none}
+    .fill,select.fill,select.fill-inline,select.fill-select{background:transparent!important;border:none!important;box-shadow:none!important;outline:none!important;padding:0!important;color:var(--ink)!important;appearance:none;-webkit-appearance:none}
+    #endTime{background:transparent!important;color:var(--ink)!important}
     .members input{border:none}
     header,.titlebar,.secnum,.sectitle,table.phones th,.pillar,.badge,.fuel-cols .st,.partner-note,.faq-h,.faq-q:before{-webkit-print-color-adjust:exact;print-color-adjust:exact}
     .sec,table,.card,.members,.pillars,.partner-note,.faq-topic{break-inside:avoid}
@@ -153,10 +154,10 @@
 
     <h3>Your Shift</h3>
     <ul>
-      <li>You are scheduled for the <span class="fill" contenteditable="true" data-ph="AM/PM">AM/PM</span> shift</li>
-      <li>Start Time: <span class="fill" contenteditable="true" data-ph="0000">0000</span></li>
-      <li>End Time: <span class="fill" contenteditable="true" data-ph="0000">0000</span></li>
-      <li>Work Schedule: <span class="fill" contenteditable="true" data-ph="Select Day">Select Day</span> &ndash; <span class="fill" contenteditable="true" data-ph="Select Day">Select Day</span></li>
+      <li>You are scheduled for the <select class="fill fill-inline" id="shiftAmPm"><option value="" selected>AM/PM</option><option value="AM">AM</option><option value="PM">PM</option></select> shift</li>
+      <li>Start Time: <span class="fill" contenteditable="true" data-ph="0000" id="startTime">0000</span></li>
+      <li>End Time: <span class="fill" id="endTime" style="background:#f0f3f7;color:var(--muted)">0000</span></li>
+      <li>Work Schedule: <select class="fill fill-inline" id="schedFrom"><option value="" selected>Select Day</option><option>Sunday</option><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option></select> &ndash; <select class="fill fill-inline" id="schedTo"><option value="" selected>Select Day</option><option>Sunday</option><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option></select></li>
     </ul>
 
     <h3>Work Schedule &amp; Operating Locations</h3>
@@ -380,11 +381,36 @@
     });
   });
 
+  // Auto-calculate End Time = Start Time + 12 hours (military HHMM)
+  function updateEndTime(){
+    const startEl=document.getElementById('startTime');
+    const endEl=document.getElementById('endTime');
+    if(!startEl||!endEl) return;
+    const raw=startEl.textContent.trim().replace(':','');
+    if(!/^\d{3,4}$/.test(raw)){ endEl.textContent='0000'; return; }
+    const t=raw.padStart(4,'0');
+    let h=parseInt(t.slice(0,2),10);
+    const m=parseInt(t.slice(2),10);
+    if(h>23||m>59){ endEl.textContent='0000'; return; }
+    h=(h+12)%24;
+    endEl.textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+  }
+  (function(){
+    const startEl=document.getElementById('startTime');
+    if(startEl){
+      startEl.addEventListener('input',updateEndTime);
+      startEl.addEventListener('blur',updateEndTime);
+    }
+  })();
+
   // Reset the whole letter to its blank state
   function clearAll(){
     if(!confirm('Clear all selections and entries?')) return;
     // reset editable fill-in fields to their placeholders
     document.querySelectorAll('.fill[contenteditable]').forEach(el=>{ el.textContent=el.dataset.ph; });
+    // reset shift dropdowns and auto end time
+    ['shiftAmPm','schedFrom','schedTo'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+    updateEndTime();
     // reset lane -> this also rebuilds/clears the two dropdowns, phone numbers, fuel, and signature
     const lane=document.getElementById('laneSelect');
     lane.value='';
